@@ -14,7 +14,7 @@ function Piece(initialValue) {
 	this.addValue = function(other) {
 		other.value += this.value;
 	}
-	this.combine = function(other, grid) { //TO-COMPLETE
+	this.combine = function(other, grid) {
 		this.addValue(other);
 		grid.spaces[this.row][this.col] = null;
 
@@ -77,7 +77,7 @@ function Piece(initialValue) {
 				var currCol = this.col + 1;
 				break;
 		}
-		console.log("GOING FROM " + this.row + ", " + this.col + " TO " + currRow + ", " +  currCol)
+		// console.log("GOING FROM " + this.row + ", " + this.col + " TO " + currRow + ", " +  currCol)
 		grid.spaces[this.row][this.col] = null;
 
 		grid.spaces[currRow][currCol] = this;
@@ -91,53 +91,71 @@ function Piece(initialValue) {
 
 function Grid() {
 	this.spaces = [[null, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]];
+	var moved = false;
 	this.move = function(dir) { //TO-COMPLETE
 		var currRow = 0;
 		var currCol = 0;
+		var moveHelper = function(piece, grid) {
+			if (currPiece != null) {
+				while (currPiece.canMoveOnce(dir, grid)) {
+					currPiece.moveOnce(dir, grid);
+					moved = true;
+				}
+				var neighbor = currPiece.getNeighbor(dir, grid);
+				if (currPiece.canCombine(neighbor)) {
+					currPiece.combine(neighbor, grid);
+					moved = true;
+				}
+			}
+		}
 		switch (dir) {
 			case "down":
-				currRow = 0;
+				currRow = this.spaces.length - 1;
+				for (var col = currCol; col < this.spaces[0].length; col++) {
+					for (var row = currRow; row >= 0; row--) {
+						var currPiece = this.spaces[row][col];
+						moveHelper(currPiece, this);
+					}
+				}
 				break;
 			case "up":
-
 				currRow = 0;
 				for (var col = currCol; col < this.spaces[0].length; col++) {
 					for (var row = currRow; row < this.spaces.length; row++) {
-						// console.log(this.toString());
 						var currPiece = this.spaces[row][col];
-						if (currPiece != null) {
-							while (currPiece.canMoveOnce(dir, this)) {
-								currPiece.moveOnce(dir, this);
-							}
-							var neighbor = currPiece.getNeighbor(dir, this);
-							// console.log(neighbor);
-							if (currPiece.canCombine(neighbor)) {
-								currPiece.combine(neighbor, this);
-							}
-						}
+						moveHelper(currPiece, this);
 					}
-
 				}
 				break;
 			case "left":
-				currCol = this.spaces[0].length - 1;
+				currCol = 0;
+				for (var row = currRow; row < this.spaces.length; row++) {
+					for (var col = currCol; col < this.spaces[0].length; col++) {
+						var currPiece = this.spaces[row][col];
+						moveHelper(currPiece, this);
+					}
+				}
 				break;
 			case "right":
-				currCol = 0;
+				currCol = this.spaces[0].length - 1;
+				for (var row = currRow; row < this.spaces.length; row++) {
+					for (var col = currCol; col >= 0; col--) {
+						var currPiece = this.spaces[row][col];
+						moveHelper(currPiece, this);
+					}
+				}
 				break;
 		}
+		if (moved) {
+			this.addPiece(new Piece(2)); //CHANGE: ADD RANDOM PIECE
+		}
+		moved = false;
 
 	};
 
 	this.canEndGame = function() { //TO-COMPLETE
 
 	};
-
-
-	this.canMove = function(dir) { //TO-COMPLETE
-
-	};
-	this.canMove = true;
 
 	this.addPiece = function(piece) {
 		var emptyPositions = [];
@@ -150,8 +168,8 @@ function Grid() {
 		}
 		var randomPos = emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
 		this.spaces[randomPos[0]][randomPos[1]] = piece;
-		piece.x = randomPos[0];
-		piece.y = randomPos[1];
+		piece.row = randomPos[0];
+		piece.col = randomPos[1];
 	};
 	this.addPieceToPos = function(piece, row, col) { //TESTING PURPOSES ONLY
 		this.spaces[row][col] = piece;
@@ -184,11 +202,35 @@ function Game() {
 	this.configureFromReset = function() {
 		this.grid = new Grid();
 		this.score = 0;
-		// this.grid.addPiece(new Piece(2));
-		// this.grid.addPiece(new Piece(2));
+		this.grid.addPiece(new Piece(2));
+		this.grid.addPiece(new Piece(2));
 	}
 	this.run = function() { //TO-COMPLETE FOR NOW WILL RETURN PRINTED VERSION OF BOARD
 		this.configureFromReset();
+		var grid = this.grid;
+		$(document).keydown(function(e) {
+    		switch(e.which) {
+        		case 37: // left
+        			grid.move("left");
+        			break;
+
+        		case 38: // up
+        			grid.move("up");
+        			break;
+
+        		case 39: // right
+        			grid.move("right");
+        			break;
+
+        		case 40: // down
+        			grid.move("down");
+        			break;
+
+        		default: return; // exit this handler for other keys
+    		}
+    		console.log(grid.toString());
+   			e.preventDefault(); // prevent the default action (scroll / move caret)
+   		});
 	}
 }
 
@@ -197,17 +239,18 @@ var main = function() {
 	game.run();
 	// $('.content').text(game.grid.toString());
 	//TEST
-	var p1 = new Piece(2);
-	var p2 = new Piece(2);
-	var p3 = new Piece(2);
-	var p4 = new Piece(2);
-	game.grid.addPieceToPos(p1, 3,0);
-	game.grid.addPieceToPos(p2, 2,0);
-	game.grid.addPieceToPos(p3, 1,0);
-	game.grid.addPieceToPos(p4, 0,0);
-	console.log(game.grid.toString());
-	game.grid.move("up");
-	console.log(game.grid.toString());
+	// var p1 = new Piece(2);
+	// var p2 = new Piece(2);
+	// var p3 = new Piece(2);
+	// var p4 = new Piece(2);
+	// game.grid.addPieceToPos(p1, 3,3);
+	// game.grid.addPieceToPos(p2, 3,2);
+	// game.grid.addPieceToPos(p3, 3,1);
+	// game.grid.addPieceToPos(p4, 3,0);
+	
+	// console.log(game.grid.toString());
+	// game.grid.move("left");
+	// console.log(game.grid.toString());
 }
 $(document).ready(main);
 
