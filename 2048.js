@@ -153,7 +153,21 @@ function Grid() {
 
 	};
 
-	this.canEndGame = function() { //TO-COMPLETE
+	this.canEndGame = function() {
+		var g = this;
+		var canEndGameHelper = function(piece) {
+			if (piece === -1) {
+				return true;
+			} else if (piece == null) {
+				return false;
+			} else {
+				var rightNeighbor = piece.getNeighbor("right", g);
+				var downNeighbor = piece.getNeighbor("down", g);
+				return !piece.canCombine(rightNeighbor) && !piece.canCombine(downNeighbor)
+						&& canEndGameHelper(rightNeighbor) && canEndGameHelper(downNeighbor);
+			}
+		}
+		return canEndGameHelper(this.spaces[0][0]);
 
 	};
 
@@ -229,6 +243,7 @@ function Game() {
         		default: return; // exit this handler for other keys
     		}
     		console.log(grid.toString());
+    		console.log(grid.canEndGame());
    			e.preventDefault(); // prevent the default action (scroll / move caret)
    		});
 	}
@@ -243,14 +258,15 @@ var main = function() {
 	// var p2 = new Piece(2);
 	// var p3 = new Piece(2);
 	// var p4 = new Piece(2);
-	// game.grid.addPieceToPos(p1, 3,3);
+	// game.grid.addPieceToPos(new , 3,3);
 	// game.grid.addPieceToPos(p2, 3,2);
 	// game.grid.addPieceToPos(p3, 3,1);
 	// game.grid.addPieceToPos(p4, 3,0);
 	
 	// console.log(game.grid.toString());
 	// game.grid.move("left");
-	// console.log(game.grid.toString());
+	console.log(game.grid.toString());
+	console.log(game.grid.canEndGame());
 }
 $(document).ready(main);
 
