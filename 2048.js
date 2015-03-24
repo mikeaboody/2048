@@ -5,15 +5,6 @@ function Piece(initialValue) {
 	this.getValue = function() {
 		return this.value;
 	}
-	this.color = function() {
-
-	}
-	this.getX = function() {
-		return this.x;
-	}
-	this.getY = function() {
-		return this.y;
-	}
 	this.addValue = function(other) {
 		other.value += this.value;
 	}
@@ -179,7 +170,11 @@ function Grid() {
 				break;
 		}
 		if (moved) {
-			this.addPiece(new Piece(2)); //CHANGE: ADD RANDOM PIECE
+			if (Math.random() < 0.5) {
+				this.addPiece(new Piece(2)); 
+			} else {
+				this.addPiece(new Piece(4)); 
+			}
 		}
 		moved = false;
 
@@ -252,7 +247,7 @@ function Game() {
 		this.grid.addPiece(new Piece(2));
 		this.updateGridUI();
 	}
-	this.run = function() { //TO-COMPLETE FOR NOW WILL RETURN PRINTED VERSION OF BOARD
+	this.run = function() { 
 		this.configureFromReset();
 		var grid = this.grid;
 		var game = this;
