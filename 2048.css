@@ -1,15 +1,17 @@
 .grid {
 	width:400px;
-	height:400px; 
-	background-color:#d3d3d3;
-	margin:15px;
+	height:380px; 
+	background-color:#bbada0;
+	padding: 10px;
+    border-radius: 4px;
 }
 .row .box {
 	display: inline-block;
 	width: 90px;
 	height:90px;
-	background-color: grey;
+	background-color:#ccc0b3;
 	margin:2px;
+	border-radius:4px;
 }
 
 .row .box .label {
@@ -23,5 +25,6 @@
 }
 .row {
 	margin:5px;
+	display:inline;
 
 }

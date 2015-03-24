@@ -87,6 +87,35 @@ function Piece(initialValue) {
 		this.row = currRow;
 		this.col = currCol;
 	}
+	this.getColor = function() {
+		switch(this.value) {
+			case 2:
+				return "gold";
+			case 4:
+				return "orange";
+			case 8:
+				return "green";
+			case 16:
+				return "red";
+			case 32:
+				return "pink";
+			case 64:
+				return "maroon";
+			case 128:
+				return "blue";
+			case 256:
+				return "#20B2AA";
+			case 512:
+				return "purple";
+			case 1024:
+				return "magenta";
+			case 2048:
+				return "black";
+			return "#ccc0b3;";
+
+
+		}
+	}
 
 
 }
@@ -221,11 +250,14 @@ function Game() {
 		this.score = 0;
 		this.grid.addPiece(new Piece(2));
 		this.grid.addPiece(new Piece(2));
+		this.updateGridUI();
 	}
 	this.run = function() { //TO-COMPLETE FOR NOW WILL RETURN PRINTED VERSION OF BOARD
 		this.configureFromReset();
 		var grid = this.grid;
+		var game = this;
 		$(document).keydown(function(e) {
+			
     		switch(e.which) {
         		case 37: // left
         			grid.move("left");
@@ -245,49 +277,34 @@ function Game() {
 
         		default: return; // exit this handler for other keys
     		}
-    		console.log(grid.toString());
-    		console.log(grid.canEndGame());
+    		game.updateGridUI();
    			e.preventDefault(); // prevent the default action (scroll / move caret)
    		});
 	};
 	this.updateGridUI = function() {
-		//get corresponding elements
-		//update style features
+		for (var i = 0; i < this.grid.spaces.length; i++) {
+			for (var j = 0; j < this.grid.spaces[i].length; j++) {
+				var currPiece = this.grid.spaces[i][j];
+				var idString = "#position-" + i + "-" + j;
+				if (currPiece == null) {
+					$(idString + " .label").html("&nbsp;");
+					$(idString).css("background-color", "#ccc0b3");
+				} else {
+					$(idString + " .label").html("" + currPiece.getValue());
+					$(idString).css("background-color", currPiece.getColor());
+				}
+				
+			}
+		}
 
-
-	};
-	this.resetGridUI = function() {
-		//remove all existing elements
-		//add all new elements with appropriate height and width
-		var size = this.grid.spaces.length;
-		var grid = document.getElementsByClassName("grid");
-		console.log(grid[0].style.width);
-		console.log()
-		var blockSize = grid[0].style.width / size;
-		console.log(blockSize);
 	};
 
 }
 
+
 var main = function() {
 	var game = new Game();
 	game.run();
-	// $('.content').text(game.grid.toString());
-	//TEST
-	// var p1 = new Piece(2);
-	// var p2 = new Piece(2);
-	// var p3 = new Piece(2);
-	// var p4 = new Piece(2);
-	// game.grid.addPieceToPos(new , 3,3);
-	// game.grid.addPieceToPos(p2, 3,2);
-	// game.grid.addPieceToPos(p3, 3,1);
-	// game.grid.addPieceToPos(p4, 3,0);
-	
-	// console.log(game.grid.toString());
-	// game.grid.move("left");
-	console.log(game.grid.toString());
-	console.log(game.grid.canEndGame());
-	game.resetGridUI();
 }
 $(document).ready(main);
 
