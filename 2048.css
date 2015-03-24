@@ -1,0 +1,27 @@
+.grid {
+	width:400px;
+	height:400px; 
+	background-color:#d3d3d3;
+	margin:15px;
+}
+.row .box {
+	display: inline-block;
+	width: 90px;
+	height:90px;
+	background-color: grey;
+	margin:2px;
+}
+
+.row .box .label {
+	color: white;
+	width: 90px;
+	height: 40px;
+	font-size: 40px;
+	text-align: center;
+	top: 30px;
+	position:relative;
+}
+.row {
+	margin:5px;
+
+}

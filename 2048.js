@@ -5,6 +5,9 @@ function Piece(initialValue) {
 	this.getValue = function() {
 		return this.value;
 	}
+	this.color = function() {
+
+	}
 	this.getX = function() {
 		return this.x;
 	}
@@ -246,7 +249,24 @@ function Game() {
     		console.log(grid.canEndGame());
    			e.preventDefault(); // prevent the default action (scroll / move caret)
    		});
-	}
+	};
+	this.updateGridUI = function() {
+		//get corresponding elements
+		//update style features
+
+
+	};
+	this.resetGridUI = function() {
+		//remove all existing elements
+		//add all new elements with appropriate height and width
+		var size = this.grid.spaces.length;
+		var grid = document.getElementsByClassName("grid");
+		console.log(grid[0].style.width);
+		console.log()
+		var blockSize = grid[0].style.width / size;
+		console.log(blockSize);
+	};
+
 }
 
 var main = function() {
@@ -267,6 +287,7 @@ var main = function() {
 	// game.grid.move("left");
 	console.log(game.grid.toString());
 	console.log(game.grid.canEndGame());
+	game.resetGridUI();
 }
 $(document).ready(main);
 
