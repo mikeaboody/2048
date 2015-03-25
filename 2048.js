@@ -240,11 +240,13 @@ function Grid() {
 function Game() {
 	this.score = 0;
 	this.grid = new Grid();
+	this.playing = false;
 	this.configureFromReset = function() {
 		this.grid = new Grid();
 		this.score = 0;
 		this.grid.addPiece(new Piece(2));
 		this.grid.addPiece(new Piece(2));
+		this.playing = true;
 		this.updateGridUI();
 	}
 	this.run = function() { 
@@ -273,6 +275,11 @@ function Game() {
         		default: return; // exit this handler for other keys
     		}
     		game.updateGridUI();
+    		if (grid.canEndGame()) {
+    			game.gameOverUI();
+    			game.playing = false;
+    			return;
+    		}
    			e.preventDefault(); // prevent the default action (scroll / move caret)
    		});
 	};
@@ -293,12 +300,26 @@ function Game() {
 		}
 
 	};
+	this.gameOverUI = function() {
+		$(".gameover").fadeTo("slow", 0.4);
+	};
+	this.resetGameUI = function() {
+		$(".gameover").fadeTo("fast", 1);
+		this.run();
+	};
 
 }
 
+var game = new Game();
+function resetGameUI() {
+	if (!game.playing) {
+		game = new Game();
+		$(document).off("keydown");
+		game.resetGameUI();
+	}
+}
 
 var main = function() {
-	var game = new Game();
 	game.run();
 }
 $(document).ready(main);

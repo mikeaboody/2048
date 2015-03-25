@@ -3,28 +3,29 @@
 	height:380px; 
 	background-color:#bbada0;
 	padding: 10px;
+	padding-left:20px;
     border-radius: 4px;
+    
 }
-.row .box {
+.box {
 	display: inline-block;
 	width: 90px;
 	height:90px;
 	background-color:#ccc0b3;
 	margin:2px;
 	border-radius:4px;
+	
 }
 
-.row .box .label {
+.gameover {
+}
+
+.box .label {
+	position:relative;
 	color: white;
 	width: 90px;
 	height: 40px;
 	font-size: 40px;
 	text-align: center;
 	top: 30px;
-	position:relative;
-}
-.row {
-	margin:5px;
-	display:inline;
-
 }
